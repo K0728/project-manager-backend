@@ -12,12 +12,15 @@ public class Task {
     private Long id;
 
     private String title;
+
     private String description;
-    private String status;
+
+    private String status; // TODO, IN_PROGRESS, DONE
+
     private LocalDate deadline;
 
-    private Long projectId;
-    private Long assignedTo;
+    private Long projectId;   // SIMPLE रखो
+    private Long assignedTo;  // SIMPLE रखो
 
     // getters setters
     public Long getId() { return id; }
