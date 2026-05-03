@@ -9,10 +9,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
+@CrossOrigin // 👈 important for frontend calls
 public class TaskController {
 
     @Autowired
     private TaskRepository repository;
+
+    // ✅ Get ALL tasks (IMPORTANT FIX)
+    @GetMapping
+    public List<Task> getAllTasks() {
+        return repository.findAll();
+    }
 
     // Create Task
     @PostMapping
@@ -24,5 +31,11 @@ public class TaskController {
     @GetMapping("/project/{projectId}")
     public List<Task> getTasksByProject(@PathVariable Long projectId) {
         return repository.findByProjectId(projectId);
+    }
+
+    // Delete Task
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable Long id) {
+        repository.deleteById(id);
     }
 }
