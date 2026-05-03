@@ -1,5 +1,6 @@
 package com.kunal.projectmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -19,11 +20,20 @@ public class Task {
 
     private LocalDate deadline;
 
-    private Long projectId;
+    // ✅ Task → Project
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    @JsonIgnoreProperties("tasks") // 🔥 prevent infinite loop
+    private Project project;
 
-    private Long assignedTo;
+    // ✅ Task → User
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    @JsonIgnoreProperties("tasks") // 🔥 prevent infinite loop
+    private User assignedUser;
 
-    // Getters and Setters
+    // ---------------- GETTERS & SETTERS ----------------
+
     public Long getId() {
         return id;
     }
@@ -52,7 +62,6 @@ public class Task {
         this.status = status;
     }
 
-    // ✅ FIXED HERE
     public LocalDate getDeadline() {
         return deadline;
     }
@@ -61,19 +70,19 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
-    public Long getAssignedTo() {
-        return assignedTo;
+    public User getAssignedUser() {
+        return assignedUser;
     }
 
-    public void setAssignedTo(Long assignedTo) {
-        this.assignedTo = assignedTo;
+    public void setAssignedUser(User assignedUser) {
+        this.assignedUser = assignedUser;
     }
 }

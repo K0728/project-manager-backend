@@ -3,6 +3,8 @@ package com.kunal.projectmanager.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -19,9 +21,17 @@ public class User {
     @JsonIgnore
     private String password;
 
-    private String role;
+    // ✅ Role enum use करेंगे (safe)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    // Getters and Setters
+    // ✅ One user → many tasks
+    @OneToMany(mappedBy = "assignedUser")
+    @JsonIgnore
+    private List<Task> tasks;
+
+    // ---------------- GETTERS & SETTERS ----------------
+
     public Long getId() {
         return id;
     }
@@ -50,11 +60,19 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }
