@@ -3,14 +3,59 @@
 <head>
     <title>Project Manager Dashboard</title>
     <style>
-        body { font-family: Arial; text-align: center; margin-top: 50px; }
-        .card { display: inline-block; padding: 20px; margin: 10px; border-radius: 10px; background: #f4f4f4; }
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 40px;
+            background: #f9f9f9;
+        }
+
+        .card {
+            display: inline-block;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 120px;
+        }
+
+        .form-box {
+            margin-top: 40px;
+            padding: 20px;
+            background: #ffffff;
+            display: inline-block;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
     </style>
 </head>
+
 <body>
 
 <h1>📊 Project Dashboard</h1>
+<h3>Live Data from API 🚀</h3>
 
+<!-- Dashboard Cards -->
 <div class="card">
     <h2>Total</h2>
     <p id="total">0</p>
@@ -31,16 +76,66 @@
     <p id="overdue">0</p>
 </div>
 
+<!-- Add Task Form -->
+<div class="form-box">
+    <h2>Add New Task</h2>
+
+    <input type="text" id="title" placeholder="Task Title"><br>
+
+    <select id="status">
+        <option value="TODO">TODO</option>
+        <option value="IN_PROGRESS">IN_PROGRESS</option>
+        <option value="DONE">DONE</option>
+    </select><br>
+
+    <input type="date" id="deadline"><br>
+
+    <button onclick="addTask()">Add Task</button>
+</div>
+
 <script>
-    fetch("https://project-manager-backend-production-0a96.up.railway.app/dashboard")
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("total").innerText = data.totalTasks;
-        document.getElementById("completed").innerText = data.completedTasks;
-        document.getElementById("pending").innerText = data.pendingTasks;
-        document.getElementById("overdue").innerText = data.overdueTasks;
-    })
-    .catch(err => console.error(err));
+
+    // Load dashboard data
+    function loadDashboard() {
+        fetch("https://project-manager-backend-production-0a96.up.railway.app/dashboard")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("total").innerText = data.totalTasks;
+            document.getElementById("completed").innerText = data.completedTasks;
+            document.getElementById("pending").innerText = data.pendingTasks;
+            document.getElementById("overdue").innerText = data.overdueTasks;
+        })
+        .catch(err => console.error(err));
+    }
+
+    // Add new task
+    function addTask() {
+
+        const task = {
+            title: document.getElementById("title").value,
+            status: document.getElementById("status").value,
+            deadline: document.getElementById("deadline").value,
+            projectId: 1
+        };
+
+        fetch("https://project-manager-backend-production-0a96.up.railway.app/tasks", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(task)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Task Added ✅");
+            loadDashboard(); // refresh numbers
+        })
+        .catch(err => console.error(err));
+    }
+
+    // Initial load
+    loadDashboard();
+
 </script>
 
 </body>
