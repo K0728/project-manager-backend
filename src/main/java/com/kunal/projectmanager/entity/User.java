@@ -1,9 +1,6 @@
 package com.kunal.projectmanager.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -14,65 +11,21 @@ public class User {
     private Long id;
 
     private String name;
-
-    @Column(unique = true)
     private String email;
-
-    @JsonIgnore
     private String password;
+    private String role;
 
-    // ✅ Role enum use करेंगे (safe)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    public Long getId() { return id; }
 
-    // ✅ One user → many tasks
-    @OneToMany(mappedBy = "assignedUser")
-    @JsonIgnore
-    private List<Task> tasks;
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    // ---------------- GETTERS & SETTERS ----------------
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
