@@ -25,8 +25,8 @@ public class DashboardController {
         long pending = repository.countByStatus("TODO") +
                 repository.countByStatus("IN_PROGRESS");
 
-        String today = LocalDate.now().toString();
-        long overdue = repository.countByDeadlineBefore(today);
+        // ✅ FIX HERE
+        long overdue = repository.countByDeadlineBefore(LocalDate.now());
 
         Map<String, Long> data = new HashMap<>();
         data.put("totalTasks", total);
