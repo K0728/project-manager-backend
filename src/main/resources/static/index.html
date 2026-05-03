@@ -47,6 +47,32 @@
         button:hover {
             background: #45a049;
         }
+
+        table {
+            margin: 30px auto;
+            border-collapse: collapse;
+            width: 70%;
+            background: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .delete-btn {
+            background: red;
+            padding: 5px 10px;
+        }
+
+        .delete-btn:hover {
+            background: darkred;
+        }
     </style>
 </head>
 
@@ -93,19 +119,60 @@
     <button onclick="addTask()">Add Task</button>
 </div>
 
+<!-- Task Table -->
+<h2>📋 All Tasks</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Deadline</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="taskTable"></tbody>
+</table>
+
 <script>
+
+    const BASE_URL = "https://project-manager-backend-production-0a96.up.railway.app";
 
     // Load dashboard data
     function loadDashboard() {
-        fetch("https://project-manager-backend-production-0a96.up.railway.app/dashboard")
+        fetch(`${BASE_URL}/dashboard`)
         .then(res => res.json())
         .then(data => {
             document.getElementById("total").innerText = data.totalTasks;
             document.getElementById("completed").innerText = data.completedTasks;
             document.getElementById("pending").innerText = data.pendingTasks;
             document.getElementById("overdue").innerText = data.overdueTasks;
-        })
-        .catch(err => console.error(err));
+        });
+    }
+
+    // Load tasks list
+    function loadTasks() {
+        fetch(`${BASE_URL}/tasks`)
+        .then(res => res.json())
+        .then(tasks => {
+            let table = document.getElementById("taskTable");
+            table.innerHTML = "";
+
+            tasks.forEach(task => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${task.id}</td>
+                        <td>${task.title}</td>
+                        <td>${task.status}</td>
+                        <td>${task.deadline}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
     }
 
     // Add new task
@@ -118,23 +185,39 @@
             projectId: 1
         };
 
-        fetch("https://project-manager-backend-production-0a96.up.railway.app/tasks", {
+        fetch(`${BASE_URL}/tasks`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(task)
         })
         .then(res => res.json())
-        .then(data => {
+        .then(() => {
             alert("Task Added ✅");
-            loadDashboard(); // refresh numbers
+
+            // clear form
+            document.getElementById("title").value = "";
+            document.getElementById("deadline").value = "";
+
+            loadDashboard();
+            loadTasks();
+        });
+    }
+
+    // Delete task
+    function deleteTask(id) {
+        fetch(`${BASE_URL}/tasks/${id}`, {
+            method: "DELETE"
         })
-        .catch(err => console.error(err));
+        .then(() => {
+            alert("Task Deleted ❌");
+            loadDashboard();
+            loadTasks();
+        });
     }
 
     // Initial load
     loadDashboard();
+    loadTasks();
 
 </script>
 
