@@ -1,9 +1,6 @@
 package com.kunal.projectmanager.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "projects")
@@ -15,15 +12,8 @@ public class Project {
 
     private String name;
 
-    // ✅ Project created by User (relation)
-    @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    // ✅ One project → many tasks
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Task> tasks;
+    // ✅ SIMPLE (no relation)
+    private Long createdBy;
 
     // ---------------- GETTERS & SETTERS ----------------
 
@@ -39,19 +29,11 @@ public class Project {
         this.name = name;
     }
 
-    public User getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
     }
 }
